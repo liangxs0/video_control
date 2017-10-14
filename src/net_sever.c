@@ -4,7 +4,7 @@
 void do_sever(int fd)
 {
 	//传输获得的图片信息
-	int size = 0;
+	size_t size = 0;
 	int fd1 = open("a.jpg",O_RDWR);
 	if(fd1 < 0){
 		fprintf(stderr,"open picture error:%s\n",strerror(errno));
@@ -13,9 +13,13 @@ void do_sever(int fd)
 	struct stat st;
 	stat("a.jpg",&st);
 	size = st.st_size;
-	printf("size0 = %d",size);
+	printf("size0 = %lu",size);
 	char pic_buf[1024*1024*2];//2兆
 	char buffer[4096];
+
+	// if(write(fd,"aa",2) != 2){
+	// 	fprintf(stderr,"aa error:%s\n",strerror(errno));
+	// }
 	sprintf(buffer,"HTTP/1.0 200 OK\r\n"
 				"Connection: Keep-Alive\r\n"
 				"Server: Network camera\r\n"
@@ -30,26 +34,25 @@ void do_sever(int fd)
 	//消息报头
 	sprintf(buffer,"\r\n--KK\r\n"
 		"Content-Type: image/jpeg\n"
-		"Content-Length: %d\n\n", size);
+		"Content-Length: %lu\n\n", size);
 	if(write(fd,buffer,strlen(buffer)) != strlen(buffer)){
 		fprintf(stderr, "write head error:%s\n",strerror(errno));
 		return;
 	}
-	if(write(fd,"aa",2) != 2){
-		fprintf(stderr,"aa error:%s\n",strerror(errno));
-	}
+	
 	memset(pic_buf,0,sizeof(pic_buf));
+	size_t i;
 	while((size = read(fd1,pic_buf,1024*1024*2)) > 0){
-		printf("size = %d\n",size);
-		if(write(fd,pic_buf,sizeof(pic_buf)) != size){
-			fprintf(stderr,"write error:%s\n",strerror(errno));
+		printf("size02 = %lu\n",size);
+		if((i = write(fd,pic_buf,sizeof(pic_buf))) != size){
+			fprintf(stderr,"i = %lu write error:%s\n",i,strerror(errno));
 		}
 	}
 	if(size < 0){
 		printf("read error\n");
 	}
 	
-	close(fd);
+	close(fd1);
 }
 
 int net_sever(char** port)
