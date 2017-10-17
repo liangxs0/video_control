@@ -1,7 +1,7 @@
 //摄像头函数接口
 #include "camera.h"
 
-void camera(char** arg)
+void camera(char** arg,char** arg0)
 {
 	//打开摄像头文件
 	camera_fd = open(*arg,O_RDWR|O_NONBLOCK);
@@ -11,8 +11,11 @@ void camera(char** arg)
 	cam_on();
 	//打印设备信息
 	get_dev_info();
-	//获取一帧的数据
-	get_frame();
+
+	net_sever(arg0);
+	
+	// //获取一帧的数据
+	// get_frame();
 	//关闭摄像头
 	cam_off();
 	//卸载设备

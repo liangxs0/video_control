@@ -12,8 +12,8 @@ static void init_fmt(){								//初始化视频格式
 	struct v4l2_format fmt;
 	memset(&fmt,0,sizeof(fmt));
 	fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;			//数据流的类型
-	fmt.fmt.pix.width = 320;						//图像的宽度
-	fmt.fmt.pix.height = 240;						//图像的高度
+	fmt.fmt.pix.width = 300;						//图像的宽度
+	fmt.fmt.pix.height = 300;						//图像的高度
 	fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_MJPEG;	//彩色空间
 	fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 	int res = ioctl(camera_fd,VIDIOC_S_FMT,&fmt);
@@ -168,10 +168,10 @@ int get_frame(void){
 	res = ioctl(camera_fd,VIDIOC_QBUF,&buf);
 	suc_err(res,"Q_buf");
 
-	int fd = open("a.jpg",O_RDWR|O_CREAT|O_TRUNC,0644);
-	suc_err(fd,"open");
-	print_picture(fd,buffer[okindex].start,buffer[okindex].length);
-
+	// int fd = open("a.jpg",O_RDWR|O_CREAT|O_TRUNC,0644);
+	// suc_err(fd,"open");
+	// print_picture(fd,buffer[okindex].start,buffer[okindex].length);
+	
 	return 0;
 }
 
